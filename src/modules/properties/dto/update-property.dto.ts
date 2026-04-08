@@ -1,22 +1,24 @@
 import {
   IsArray,
-  IsEnum,
   IsNumber,
   IsOptional,
   IsString,
-  IsUrl,
   Min,
+  MinLength,
+  ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { Status } from '../../../common/enums/status.enum';
+import { ImageDto } from './image.dto';
 
 export class UpdatePropertyDto {
   @IsOptional()
   @IsString()
+  @MinLength(3)
   title?: string;
 
   @IsOptional()
   @IsString()
+  @MinLength(10)
   description?: string;
 
   @IsOptional()
@@ -30,11 +32,8 @@ export class UpdatePropertyDto {
   price?: number;
 
   @IsOptional()
-  @IsEnum(Status)
-  status?: Status;
-
-  @IsOptional()
   @IsArray()
-  @IsUrl({}, { each: true })
-  images?: string[];
+  @ValidateNested({ each: true })
+  @Type(() => ImageDto)
+  images?: ImageDto[];
 }

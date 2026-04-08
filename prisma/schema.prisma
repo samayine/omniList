@@ -39,9 +39,11 @@ model Property {
 model PropertyImage {
   id         String   @id @default(cuid())
   url        String
+  mimeType   String
+  sizeBytes  Int
   order      Int      @default(0)
   propertyId String
-  property   Property @relation(fields: [propertyId], references: [id])
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 }
 
 model Favorite {
