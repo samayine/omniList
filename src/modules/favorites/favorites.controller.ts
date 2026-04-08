@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Post, UseGuards } from '@nestjs/common';
-import { CurrentUser } from '../common/decorators/current-user.decorator';
-import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
-import type { AuthUser } from '../common/types/auth-user.type';
+import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import type { AuthUser } from '../../common/types/auth-user.type';
 import { FavoriteDto } from './dto/favorite.dto';
 import { FavoritesService } from './favorites.service';
 

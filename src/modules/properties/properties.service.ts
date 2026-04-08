@@ -3,10 +3,10 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Role } from '../common/enums/role.enum';
-import { Status } from '../common/enums/status.enum';
-import type { AuthUser } from '../common/types/auth-user.type';
-import { PrismaService } from '../prisma/prisma.service';
+import { Role } from '../../common/enums/role.enum';
+import { Status } from '../../common/enums/status.enum';
+import type { AuthUser } from '../../common/types/auth-user.type';
+import { PrismaService } from '../../prisma/prisma.service';
 import { CreatePropertyDto } from './dto/create-property.dto';
 import { UpdatePropertyDto } from './dto/update-property.dto';
 

@@ -1,5 +1,4 @@
 import {
-  ArrayMinSize,
   IsArray,
   IsEnum,
   IsNumber,
@@ -9,22 +8,26 @@ import {
   Min,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { Status } from '../../common/enums/status.enum';
+import { Status } from '../../../common/enums/status.enum';
 
-export class CreatePropertyDto {
+export class UpdatePropertyDto {
+  @IsOptional()
   @IsString()
-  title: string;
+  title?: string;
 
+  @IsOptional()
   @IsString()
-  description: string;
+  description?: string;
 
+  @IsOptional()
   @IsString()
-  location: string;
+  location?: string;
 
+  @IsOptional()
   @Type(() => Number)
   @IsNumber()
   @Min(0)
-  price: number;
+  price?: number;
 
   @IsOptional()
   @IsEnum(Status)
@@ -32,7 +35,6 @@ export class CreatePropertyDto {
 
   @IsOptional()
   @IsArray()
-  @ArrayMinSize(1)
   @IsUrl({}, { each: true })
   images?: string[];
 }
