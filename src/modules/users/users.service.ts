@@ -52,8 +52,21 @@ export class UsersService {
 
   async remove(id: string) {
     await this.ensureExists(id);
-    await this.prisma.user.delete({ where: { id } });
-    return { message: 'User deleted.' };
+
+    // Run inside a transaction to keep consistency:
+    // 1. Soft-delete all properties owned by this user
+    // 2. Remove all their favorites
+    // 3. Hard-delete the user (favorites and images cascade via DB)
+    await this.prisma.$transaction([
+      this.prisma.property.updateMany({
+        where: { ownerId: id, deletedAt: null },
+        data: { deletedAt: new Date() },
+      }),
+      this.prisma.favorite.deleteMany({ where: { userId: id } }),
+      this.prisma.user.delete({ where: { id } }),
+    ]);
+
+    return { message: 'User and related data deleted.' };
   }
 
   private async ensureExists(id: string) {
@@ -63,3 +76,4 @@ export class UsersService {
     }
   }
 }
+
