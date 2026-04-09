@@ -43,7 +43,7 @@ export class PropertiesService {
 
   // ── Find All (with filtering & pagination) ─────────────
   async findAll(filters: FilterPropertiesDto, user: AuthUser) {
-    const { location, minPrice, maxPrice, status, page = 1, limit = 10 } = filters;
+    const { search, location, minPrice, maxPrice, status, page = 1, limit = 10 } = filters;
     const skip = (page - 1) * limit;
 
     // Build the WHERE clause based on role
@@ -62,7 +62,24 @@ export class PropertiesService {
     }
     // ADMIN: no extra filter — sees all non-deleted
 
-    // Apply search filters
+    // Keyword search across title + description
+    if (search) {
+      const searchClause = {
+        OR: [
+          { title: { contains: search, mode: 'insensitive' } },
+          { description: { contains: search, mode: 'insensitive' } },
+        ],
+      };
+      // Merge with any existing OR clause (OWNER role builds one above)
+      if (where.OR) {
+        where.AND = [{ OR: where.OR }, searchClause];
+        delete where.OR;
+      } else {
+        Object.assign(where, searchClause);
+      }
+    }
+
+    // Apply remaining filters
     if (location) {
       where.location = { contains: location, mode: 'insensitive' };
     }
