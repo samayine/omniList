@@ -49,10 +49,10 @@ export class PropertiesService {
     // Build the WHERE clause based on role
     const where: any = { deletedAt: null };
 
-    // Regular USERs can only see PUBLISHED properties
+    // Regular USERs and unauthenticated guests can only see PUBLISHED properties
     // OWNERs can also see their own drafts
     // ADMINs see everything (that isn't soft-deleted)
-    if (user.role === Role.USER) {
+    if (!user || user.role === Role.USER) {
       where.status = Status.PUBLISHED;
     } else if (user.role === Role.OWNER) {
       where.OR = [
@@ -131,9 +131,11 @@ export class PropertiesService {
 
     if (!property) throw new NotFoundException('Property not found.');
 
-    // Regular users can only see published properties
+    if (!property) throw new NotFoundException('Property not found.');
+
+    // Unauthenticated visitors and regular users can only see published properties
     if (
-      user.role === Role.USER &&
+      (!user || user.role === Role.USER) &&
       property.status !== Status.PUBLISHED
     ) {
       throw new ForbiddenException('Not allowed to view this property.');
@@ -141,7 +143,7 @@ export class PropertiesService {
 
     // Owners can see their own + published
     if (
-      user.role === Role.OWNER &&
+      user?.role === Role.OWNER &&
       property.ownerId !== user.sub &&
       property.status !== Status.PUBLISHED
     ) {

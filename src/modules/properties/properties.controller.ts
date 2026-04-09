@@ -22,13 +22,13 @@ import { UpdatePropertyDto } from './dto/update-property.dto';
 import { PropertiesService } from './properties.service';
 
 @ApiTags('Properties')
-@ApiBearerAuth()
 @Controller('properties')
-@UseGuards(JwtAuthGuard, RolesGuard)
 export class PropertiesController {
   constructor(private readonly propertiesService: PropertiesService) {}
 
   @Post()
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.OWNER, Role.ADMIN)
   @ApiOperation({ summary: 'Create a new property (starts as DRAFT)' })
   create(@Body() dto: CreatePropertyDto, @CurrentUser() user: AuthUser) {
@@ -48,6 +48,8 @@ export class PropertiesController {
   }
 
   @Patch(':id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.OWNER, Role.ADMIN)
   @ApiOperation({ summary: 'Update property content (DRAFT only unless ADMIN)' })
   update(
@@ -59,6 +61,8 @@ export class PropertiesController {
   }
 
   @Patch(':id/publish')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.OWNER, Role.ADMIN)
   @ApiOperation({ summary: 'Publish a DRAFT property (validates completeness)' })
   publish(@Param('id') id: string, @CurrentUser() user: AuthUser) {
@@ -66,6 +70,8 @@ export class PropertiesController {
   }
 
   @Patch(':id/archive')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.OWNER, Role.ADMIN)
   @ApiOperation({ summary: 'Archive a property' })
   archive(@Param('id') id: string, @CurrentUser() user: AuthUser) {
@@ -73,6 +79,8 @@ export class PropertiesController {
   }
 
   @Delete(':id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.OWNER, Role.ADMIN)
   @ApiOperation({ summary: 'Soft-delete a property (sets deletedAt)' })
   remove(@Param('id') id: string, @CurrentUser() user: AuthUser) {
