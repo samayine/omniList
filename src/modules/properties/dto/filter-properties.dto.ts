@@ -1,5 +1,5 @@
-import { IsEnum, IsNumber, IsOptional, IsString, Min } from 'class-validator';
-import { Type } from 'class-transformer';
+import { IsBoolean, IsEnum, IsNumber, IsOptional, IsString, Min } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Status } from '../../../common/enums/status.enum';
 
@@ -46,4 +46,10 @@ export class FilterPropertiesDto {
   @IsNumber()
   @Min(1)
   limit?: number = 10;
+
+  @ApiPropertyOptional({ description: 'Return only the authenticated owner\'s own listings' })
+  @IsOptional()
+  @Transform(({ value }) => value === 'true' || value === true)
+  @IsBoolean()
+  onlyMine?: boolean;
 }

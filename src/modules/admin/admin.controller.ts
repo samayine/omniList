@@ -36,5 +36,11 @@ export class AdminController {
   disableProperty(@Param('id') id: string) {
     return this.adminService.disableProperty(id);
   }
+
+  @Patch('properties/:id/restore')
+  @ApiOperation({ summary: 'Restore an archived property back to DRAFT' })
+  restoreProperty(@Param('id') id: string) {
+    return this.adminService.restoreProperty(id);
+  }
 }
 

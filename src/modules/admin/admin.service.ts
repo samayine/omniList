@@ -56,4 +56,19 @@ export class AdminService {
       include: { images: true, owner: { select: { id: true, email: true, role: true } } },
     });
   }
+
+  // Admin: restore an archived property back to DRAFT
+  async restoreProperty(id: string) {
+    const property = await this.prisma.property.findFirst({
+      where: { id, deletedAt: null, status: 'ARCHIVED' },
+    });
+    if (!property) {
+      throw new NotFoundException('Archived property not found.');
+    }
+    return this.prisma.property.update({
+      where: { id },
+      data: { status: 'DRAFT' },
+      include: { images: true, owner: { select: { id: true, email: true, role: true } } },
+    });
+  }
 }

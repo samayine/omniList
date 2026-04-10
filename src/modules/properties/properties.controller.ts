@@ -14,6 +14,7 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { Role } from '../../common/enums/role.enum';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { OptionalJwtAuthGuard } from '../../common/guards/optional-jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import type { AuthUser } from '../../common/types/auth-user.type';
 import { CreatePropertyDto } from './dto/create-property.dto';
@@ -36,12 +37,14 @@ export class PropertiesController {
   }
 
   @Get()
+  @UseGuards(OptionalJwtAuthGuard)
   @ApiOperation({ summary: 'List properties with filtering and pagination' })
   findAll(@Query() filters: FilterPropertiesDto, @CurrentUser() user: AuthUser) {
     return this.propertiesService.findAll(filters, user);
   }
 
   @Get(':id')
+  @UseGuards(OptionalJwtAuthGuard)
   @ApiOperation({ summary: 'Get a single property by ID' })
   findOne(@Param('id') id: string, @CurrentUser() user: AuthUser) {
     return this.propertiesService.findOne(id, user);

@@ -43,16 +43,16 @@ export class PropertiesService {
 
   // ── Find All (with filtering & pagination) ─────────────
   async findAll(filters: FilterPropertiesDto, user: AuthUser) {
-    const { search, location, minPrice, maxPrice, status, page = 1, limit = 10 } = filters;
+    const { search, location, minPrice, maxPrice, status, page = 1, limit = 10, onlyMine } = filters;
     const skip = (page - 1) * limit;
 
     // Build the WHERE clause based on role
     const where: any = { deletedAt: null };
 
-    // Regular USERs and unauthenticated guests can only see PUBLISHED properties
-    // OWNERs can also see their own drafts
-    // ADMINs see everything (that isn't soft-deleted)
-    if (!user || user.role === Role.USER) {
+    if (onlyMine && user?.role === Role.OWNER) {
+      // "My Listings" — only the caller's own properties, all statuses
+      where.ownerId = user.sub;
+    } else if (!user || user.role === Role.USER) {
       where.status = Status.PUBLISHED;
     } else if (user.role === Role.OWNER) {
       where.OR = [
@@ -62,12 +62,13 @@ export class PropertiesService {
     }
     // ADMIN: no extra filter — sees all non-deleted
 
-    // Keyword search across title + description
+    // Keyword search across title, description, AND location
     if (search) {
       const searchClause = {
         OR: [
           { title: { contains: search, mode: 'insensitive' } },
           { description: { contains: search, mode: 'insensitive' } },
+          { location: { contains: search, mode: 'insensitive' } },
         ],
       };
       // Merge with any existing OR clause (OWNER role builds one above)
