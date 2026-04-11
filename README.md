@@ -47,4 +47,7 @@ This is the backend API for the OmniList platform. The frontend repository can b
    ```
 
 ## API Documentation
-Interactive documentation is available at `/api/docs` when the server is running.
+Interactive Swagger docs are live at:
+**[https://omnilist.onrender.com/api/docs](https://omnilist.onrender.com/api/docs)**
+
+> The free Render instance may take ~30s to wake up if idle.
