@@ -20,7 +20,3 @@ Admins bypass ownership checks entirely.
 ## Hardest Challenge
 
 CORS. Everything looked fine locally, but in production, POST requests (login, upload) were silently blocked while GET requests worked. The issue was a mismatch between what Vercel was sending as the `Origin` header and what Render had in `FRONTEND_ORIGIN`. Took some time to diagnose because the error only shows up in the browser console, not in backend logs.
-
-## What Breaks First at Scale
-
-The DB connection pool. Everything else is decently handled — images are on Cloudinary, listings are paginated — but under heavy concurrent load, the Postgres pool hits its limit fast. After that, cold starts on Render's free tier would be the next pain point.
