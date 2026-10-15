@@ -1,5 +1,17 @@
-import { Controller, Get, Param, Patch, Query, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { Role } from '../../common/enums/role.enum';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
@@ -15,7 +27,9 @@ export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
   @Get('metrics')
-  @ApiOperation({ summary: 'Get platform-level metrics (users, properties, favorites)' })
+  @ApiOperation({
+    summary: 'Get platform-level metrics (users, properties, favorites)',
+  })
   metrics() {
     return this.adminService.metrics();
   }
@@ -24,11 +38,11 @@ export class AdminController {
   @ApiOperation({ summary: 'List all properties (including non-published)' })
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })
-  properties(
-    @Query('page') page?: number,
-    @Query('limit') limit?: number,
-  ) {
-    return this.adminService.findAllProperties(Number(page) || 1, Number(limit) || 20);
+  properties(@Query('page') page?: number, @Query('limit') limit?: number) {
+    return this.adminService.findAllProperties(
+      Number(page) || 1,
+      Number(limit) || 20,
+    );
   }
 
   @Patch('properties/:id/disable')
@@ -43,4 +57,3 @@ export class AdminController {
     return this.adminService.restoreProperty(id);
   }
 }
-

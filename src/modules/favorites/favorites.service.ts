@@ -29,7 +29,10 @@ export class FavoritesService {
       where: { userId },
       include: {
         property: {
-          include: { images: true, owner: { select: { id: true, email: true } } },
+          include: {
+            images: true,
+            owner: { select: { id: true, email: true } },
+          },
         },
       },
       orderBy: { id: 'desc' },

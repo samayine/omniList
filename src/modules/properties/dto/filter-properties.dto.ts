@@ -1,15 +1,26 @@
-import { IsBoolean, IsEnum, IsNumber, IsOptional, IsString, Min } from 'class-validator';
+import {
+  IsBoolean,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Min,
+} from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Status } from '../../../common/enums/status.enum';
 
 export class FilterPropertiesDto {
-  @ApiPropertyOptional({ description: 'Keyword search in title and description' })
+  @ApiPropertyOptional({
+    description: 'Keyword search in title and description',
+  })
   @IsOptional()
   @IsString()
   search?: string;
 
-  @ApiPropertyOptional({ description: 'Filter by location (partial, case-insensitive)' })
+  @ApiPropertyOptional({
+    description: 'Filter by location (partial, case-insensitive)',
+  })
   @IsOptional()
   @IsString()
   location?: string;
@@ -47,7 +58,9 @@ export class FilterPropertiesDto {
   @Min(1)
   limit?: number = 10;
 
-  @ApiPropertyOptional({ description: 'Return only the authenticated owner\'s own listings' })
+  @ApiPropertyOptional({
+    description: "Return only the authenticated owner's own listings",
+  })
   @IsOptional()
   @Transform(({ value }) => value === 'true' || value === true)
   @IsBoolean()

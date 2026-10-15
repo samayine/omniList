@@ -6,15 +6,27 @@ export class AdminService {
   constructor(private readonly prisma: PrismaService) {}
 
   async metrics() {
-    const [totalUsers, totalProperties, publishedProperties, draftProperties, archivedProperties, totalFavorites] =
-      await Promise.all([
-        this.prisma.user.count(),
-        this.prisma.property.count({ where: { deletedAt: null } }),
-        this.prisma.property.count({ where: { status: 'PUBLISHED', deletedAt: null } }),
-        this.prisma.property.count({ where: { status: 'DRAFT', deletedAt: null } }),
-        this.prisma.property.count({ where: { status: 'ARCHIVED', deletedAt: null } }),
-        this.prisma.favorite.count(),
-      ]);
+    const [
+      totalUsers,
+      totalProperties,
+      publishedProperties,
+      draftProperties,
+      archivedProperties,
+      totalFavorites,
+    ] = await Promise.all([
+      this.prisma.user.count(),
+      this.prisma.property.count({ where: { deletedAt: null } }),
+      this.prisma.property.count({
+        where: { status: 'PUBLISHED', deletedAt: null },
+      }),
+      this.prisma.property.count({
+        where: { status: 'DRAFT', deletedAt: null },
+      }),
+      this.prisma.property.count({
+        where: { status: 'ARCHIVED', deletedAt: null },
+      }),
+      this.prisma.favorite.count(),
+    ]);
 
     return {
       users: totalUsers,
@@ -53,7 +65,10 @@ export class AdminService {
     return this.prisma.property.update({
       where: { id },
       data: { status: 'ARCHIVED' },
-      include: { images: true, owner: { select: { id: true, email: true, role: true } } },
+      include: {
+        images: true,
+        owner: { select: { id: true, email: true, role: true } },
+      },
     });
   }
 
@@ -68,7 +83,10 @@ export class AdminService {
     return this.prisma.property.update({
       where: { id },
       data: { status: 'DRAFT' },
-      include: { images: true, owner: { select: { id: true, email: true, role: true } } },
+      include: {
+        images: true,
+        owner: { select: { id: true, email: true, role: true } },
+      },
     });
   }
 }

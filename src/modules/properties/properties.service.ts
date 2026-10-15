@@ -7,6 +7,7 @@ import {
 import { Role } from '../../common/enums/role.enum';
 import { Status } from '../../common/enums/status.enum';
 import type { AuthUser } from '../../common/types/auth-user.type';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreatePropertyDto } from './dto/create-property.dto';
 import { FilterPropertiesDto } from './dto/filter-properties.dto';
@@ -43,11 +44,20 @@ export class PropertiesService {
 
   // ── Find All (with filtering & pagination) ─────────────
   async findAll(filters: FilterPropertiesDto, user: AuthUser) {
-    const { search, location, minPrice, maxPrice, status, page = 1, limit = 10, onlyMine } = filters;
+    const {
+      search,
+      location,
+      minPrice,
+      maxPrice,
+      status,
+      page = 1,
+      limit = 10,
+      onlyMine,
+    } = filters;
     const skip = (page - 1) * limit;
 
     // Build the WHERE clause based on role
-    const where: any = { deletedAt: null };
+    const where: Prisma.PropertyWhereInput = { deletedAt: null };
 
     if (onlyMine && user?.role === Role.OWNER) {
       // "My Listings" — only the caller's own properties, all statuses
@@ -55,16 +65,13 @@ export class PropertiesService {
     } else if (!user || user.role === Role.USER) {
       where.status = Status.PUBLISHED;
     } else if (user.role === Role.OWNER) {
-      where.OR = [
-        { status: Status.PUBLISHED },
-        { ownerId: user.sub },
-      ];
+      where.OR = [{ status: Status.PUBLISHED }, { ownerId: user.sub }];
     }
     // ADMIN: no extra filter — sees all non-deleted
 
     // Keyword search across title, description, AND location
     if (search) {
-      const searchClause = {
+      const searchClause: Prisma.PropertyWhereInput = {
         OR: [
           { title: { contains: search, mode: 'insensitive' } },
           { description: { contains: search, mode: 'insensitive' } },
@@ -132,8 +139,6 @@ export class PropertiesService {
 
     if (!property) throw new NotFoundException('Property not found.');
 
-    if (!property) throw new NotFoundException('Property not found.');
-
     // Unauthenticated visitors and regular users can only see published properties
     if (
       (!user || user.role === Role.USER) &&
@@ -160,7 +165,9 @@ export class PropertiesService {
 
     // Can only edit DRAFT properties (published ones should not be silently modified)
     if (property.status !== Status.DRAFT && user.role !== Role.ADMIN) {
-      throw new BadRequestException('Only DRAFT properties can be edited. Archive it first.');
+      throw new BadRequestException(
+        'Only DRAFT properties can be edited. Archive it first.',
+      );
     }
 
     return this.prisma.property.update({

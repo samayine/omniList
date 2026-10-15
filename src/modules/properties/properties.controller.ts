@@ -39,7 +39,10 @@ export class PropertiesController {
   @Get()
   @UseGuards(OptionalJwtAuthGuard)
   @ApiOperation({ summary: 'List properties with filtering and pagination' })
-  findAll(@Query() filters: FilterPropertiesDto, @CurrentUser() user: AuthUser) {
+  findAll(
+    @Query() filters: FilterPropertiesDto,
+    @CurrentUser() user: AuthUser,
+  ) {
     return this.propertiesService.findAll(filters, user);
   }
 
@@ -54,7 +57,9 @@ export class PropertiesController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.OWNER, Role.ADMIN)
-  @ApiOperation({ summary: 'Update property content (DRAFT only unless ADMIN)' })
+  @ApiOperation({
+    summary: 'Update property content (DRAFT only unless ADMIN)',
+  })
   update(
     @Param('id') id: string,
     @Body() dto: UpdatePropertyDto,
@@ -67,7 +72,9 @@ export class PropertiesController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.OWNER, Role.ADMIN)
-  @ApiOperation({ summary: 'Publish a DRAFT property (validates completeness)' })
+  @ApiOperation({
+    summary: 'Publish a DRAFT property (validates completeness)',
+  })
   publish(@Param('id') id: string, @CurrentUser() user: AuthUser) {
     return this.propertiesService.publish(id, user);
   }
@@ -90,4 +97,3 @@ export class PropertiesController {
     return this.propertiesService.remove(id, user);
   }
 }
-

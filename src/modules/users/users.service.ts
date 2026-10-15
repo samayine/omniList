@@ -16,13 +16,25 @@ export class UsersService {
         passwordHash,
         role: dto.role,
       },
-      select: { id: true, email: true, role: true, createdAt: true, updatedAt: true },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
   }
 
   findAll() {
     return this.prisma.user.findMany({
-      select: { id: true, email: true, role: true, createdAt: true, updatedAt: true },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true,
+      },
       orderBy: { createdAt: 'desc' },
     });
   }
@@ -30,7 +42,13 @@ export class UsersService {
   async findOne(id: string) {
     const user = await this.prisma.user.findUnique({
       where: { id },
-      select: { id: true, email: true, role: true, createdAt: true, updatedAt: true },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
     if (!user) {
       throw new NotFoundException('User not found.');
@@ -46,7 +64,13 @@ export class UsersService {
         email: dto.email?.toLowerCase(),
         role: dto.role,
       },
-      select: { id: true, email: true, role: true, createdAt: true, updatedAt: true },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
   }
 
@@ -70,10 +94,12 @@ export class UsersService {
   }
 
   private async ensureExists(id: string) {
-    const user = await this.prisma.user.findUnique({ where: { id }, select: { id: true } });
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      select: { id: true },
+    });
     if (!user) {
       throw new NotFoundException('User not found.');
     }
   }
 }
-

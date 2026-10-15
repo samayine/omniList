@@ -20,7 +20,9 @@ export class FavoritesController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'List all favorite properties for the current user' })
+  @ApiOperation({
+    summary: 'List all favorite properties for the current user',
+  })
   list(@CurrentUser() user: AuthUser) {
     return this.favoritesService.list(user.sub);
   }

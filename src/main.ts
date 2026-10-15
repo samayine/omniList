@@ -1,14 +1,15 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   // ── Proxy Trust ───────────────────────────────────────────────────
   // Ensure reverse proxies (Render, Vercel) forward the real client IP for rate-limiting
-  app.getHttpAdapter().getInstance().set('trust proxy', 1);
+  app.set('trust proxy', 1);
 
   // ── CORS ──────────────────────────────────────────────────────────
   // Allow the Next.js frontend dev server and any deployed frontend

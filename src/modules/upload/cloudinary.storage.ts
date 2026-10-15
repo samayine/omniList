@@ -10,7 +10,7 @@ export const createCloudinaryStorage = () => {
 
   return new CloudinaryStorage({
     cloudinary: cloudinary,
-    params: async (_req, file) => {
+    params: (_req, file) => {
       return {
         folder: 'omnilist_properties',
         allowed_formats: ['jpg', 'png', 'webp', 'gif'],

@@ -1,5 +1,4 @@
-export enum Status {
-  DRAFT = 'DRAFT',
-  PUBLISHED = 'PUBLISHED',
-  ARCHIVED = 'ARCHIVED',
-}
+import { Status as PrismaStatus } from '@prisma/client';
+
+export const Status = PrismaStatus;
+export type Status = PrismaStatus;

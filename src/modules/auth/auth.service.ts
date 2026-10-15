@@ -57,7 +57,11 @@ export class AuthService {
     return { message: 'Logged out. Remove JWT token from client storage.' };
   }
 
-  private async buildAuthResponse(user: { id: string; email: string; role: Role }) {
+  private async buildAuthResponse(user: {
+    id: string;
+    email: string;
+    role: Role;
+  }) {
     const payload = { sub: user.id, email: user.email, role: user.role };
     const accessToken = await this.jwtService.signAsync(payload);
 

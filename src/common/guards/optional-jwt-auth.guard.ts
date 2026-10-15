@@ -3,12 +3,20 @@ import { AuthGuard } from '@nestjs/passport';
 
 @Injectable()
 export class OptionalJwtAuthGuard extends AuthGuard('jwt') {
-  // Override handleRequest so it doesn't throw if no token is provided
-  handleRequest(err: any, user: any, info: any) {
+  /**
+   * Overrides Passport's handleRequest to allow anonymous access on public routes.
+   * If a valid JWT is present, user is attached; otherwise, returns null instead of 401.
+   */
+  override handleRequest<TUser = unknown>(
+    err: unknown,
+    user: TUser | false,
+  ): TUser | null {
     if (err) {
-      throw err;
+      if (err instanceof Error) {
+        throw err;
+      }
+      throw new Error(typeof err === 'string' ? err : 'Authentication error');
     }
-    // If no user was extracted (e.g. no token, invalid token), return null instead of throwing UnauthorizedException
     return user || null;
   }
 }
