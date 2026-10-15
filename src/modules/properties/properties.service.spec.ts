@@ -8,6 +8,7 @@ import { PropertiesService } from './properties.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import { Role } from '../../common/enums/role.enum';
 import { Status } from '../../common/enums/status.enum';
+import { PropertyType } from '../../common/enums/property-type.enum';
 import type { AuthUser } from '../../common/types/auth-user.type';
 
 import { CreatePropertyDto } from './dto/create-property.dto';
@@ -244,6 +245,34 @@ describe('PropertiesService', () => {
 
       const result = await service.archive('p1', mockAdmin);
       expect(result.status).toBe(Status.ARCHIVED);
+    });
+  });
+
+  describe('findAll filters', () => {
+    it('applies propertyType, minBedrooms, and minBathrooms to the where clause', async () => {
+      prisma.property.findMany.mockResolvedValue([]);
+      prisma.property.count.mockResolvedValue(0);
+
+      await service.findAll(
+        {
+          propertyType: PropertyType.VILLA,
+          minBedrooms: 3,
+          minBathrooms: 2,
+        },
+        null as unknown as AuthUser,
+      );
+
+      expect(prisma.property.findMany).toHaveBeenCalled();
+      const callArg = prisma.property.findMany.mock.calls[0][0] as {
+        where: {
+          propertyType?: PropertyType;
+          bedrooms?: { gte: number };
+          bathrooms?: { gte: number };
+        };
+      };
+      expect(callArg.where.propertyType).toBe(PropertyType.VILLA);
+      expect(callArg.where.bedrooms).toEqual({ gte: 3 });
+      expect(callArg.where.bathrooms).toEqual({ gte: 2 });
     });
   });
 });

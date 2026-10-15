@@ -26,6 +26,11 @@ export class PropertiesService {
         description: dto.description,
         location: dto.location,
         price: dto.price,
+        propertyType: dto.propertyType,
+        bedrooms: dto.bedrooms,
+        bathrooms: dto.bathrooms,
+        areaSqFt: dto.areaSqFt,
+        amenities: dto.amenities ?? [],
         status: Status.DRAFT,
         ownerId: user.sub,
         images: {
@@ -50,6 +55,9 @@ export class PropertiesService {
       minPrice,
       maxPrice,
       status,
+      propertyType,
+      minBedrooms,
+      minBathrooms,
       page = 1,
       limit = 10,
       onlyMine,
@@ -100,6 +108,15 @@ export class PropertiesService {
       // Override the role-based status filter if explicitly requested
       // (only meaningful for ADMIN/OWNER who can see non-published)
       where.status = status;
+    }
+    if (propertyType) {
+      where.propertyType = propertyType;
+    }
+    if (minBedrooms !== undefined) {
+      where.bedrooms = { gte: minBedrooms };
+    }
+    if (minBathrooms !== undefined) {
+      where.bathrooms = { gte: minBathrooms };
     }
 
     const [data, total] = await Promise.all([
@@ -177,6 +194,11 @@ export class PropertiesService {
         description: dto.description,
         location: dto.location,
         price: dto.price,
+        propertyType: dto.propertyType,
+        bedrooms: dto.bedrooms,
+        bathrooms: dto.bathrooms,
+        areaSqFt: dto.areaSqFt,
+        amenities: dto.amenities,
         images: dto.images
           ? {
               deleteMany: {},

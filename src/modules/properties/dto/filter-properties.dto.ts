@@ -9,6 +9,7 @@ import {
 import { Transform, Type } from 'class-transformer';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Status } from '../../../common/enums/status.enum';
+import { PropertyType } from '../../../common/enums/property-type.enum';
 
 export class FilterPropertiesDto {
   @ApiPropertyOptional({
@@ -43,6 +44,25 @@ export class FilterPropertiesDto {
   @IsOptional()
   @IsEnum(Status)
   status?: Status;
+
+  @ApiPropertyOptional({ enum: PropertyType })
+  @IsOptional()
+  @IsEnum(PropertyType)
+  propertyType?: PropertyType;
+
+  @ApiPropertyOptional({ description: 'Minimum number of bedrooms' })
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @Min(0)
+  minBedrooms?: number;
+
+  @ApiPropertyOptional({ description: 'Minimum number of bathrooms' })
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @Min(0)
+  minBathrooms?: number;
 
   @ApiPropertyOptional({ default: 1 })
   @IsOptional()
